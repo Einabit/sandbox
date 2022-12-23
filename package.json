@@ -1,6 +1,12 @@
 {
+  "scripts": {
+    "build": "pkg -t node14-linux src/index.js && mv index einabit-sandbox"
+  },
   "dependencies": {
     "fs-reverse": "^0.0.3",
     "yaml-parser": "^3.5.3"
+  },
+  "devDependencies": {
+    "pkg": "^5.8.0"
   }
 }

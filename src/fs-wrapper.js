@@ -26,16 +26,16 @@ self.filter = function (name, from, to, readLine, end) {
   rfs.on("data", data => {
     if (!data.startsWith(name)) return;
     const ts = Number(data.split(",").pop());
-    if (from <= ts && ts <= to) readLine(data + "\n");
+    if (from <= ts && ts <= to) readLine(data);
   })
 
   rfs.on("end", end);
 }
 
 self.commit = function (name, data) {
-  const line = [name, data, Date.now()].join() + "\n";
+  const line = [name, data, Date.now()].join();
   return new Promise((resolve, reject) => {
-    appendFile(FILENAME, line, err => {
+    appendFile(FILENAME, line + "\n", err => {
       if (err) reject(err)
       else {
         resolve();

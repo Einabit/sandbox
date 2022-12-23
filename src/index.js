@@ -1,7 +1,7 @@
 const { readFileSync } = require("fs");
 const generator = require("./generator");
 const fswrapper = require("./fs-wrapper");
-const rawconfig = readFileSync(process.argv[2]);
+const rawconfig = readFileSync("./config.yml");
 const yp = require("yaml-parser");
 const contents = yp.safeLoad(rawconfig);
 const net = require("net");
