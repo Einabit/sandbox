@@ -1,19 +1,17 @@
-const { readFileSync } = require("fs");
 const generator = require("./generator");
 const fswrapper = require("./fs-wrapper");
-const rawconfig = readFileSync("./config.yml");
+const { CONFIG } = process.env;
 const yp = require("yaml-parser");
-const contents = yp.safeLoad(rawconfig);
+const contents = yp.safeLoad(CONFIG);
 const net = require("net");
 
 const { tap, fetch, value } = require("./commands");
 
 generator.start(contents);
 net.createServer(connection => {
-
   connection.on("data", b => {
     const [command, ...args] = b.toString().split(",");
-
+    console.log("new connection received with command " + command);
     switch (command) {
       case "tap":
         tap(connection, args);
@@ -26,4 +24,6 @@ net.createServer(connection => {
         break;
     }
   });
-}).listen(1337, "127.0.0.1");
+}).listen(1337);
+
+console.log("Server started");
