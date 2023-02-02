@@ -11,7 +11,11 @@ This project allows you to mock a service with similar behavior as Einabit API s
 ```
 docker run --rm -d -e CONFIG="$(cat config.yml)" -p 1337:1337 --name einabit einabit/sandbox
 ```
-- Connect to it using any client [Einabit repos](https://github.com/orgs/Einabit/repositories)
+Connect to it using any client:
+
+- [Nodejs SDK](https://github.com/Einabit/client.js)
+- [Java SDK](https://github.com/Einabit/client.java)
+- [Python SDK](https://github.com/Einabit/client.py)
 
 ## Quick start & samples
 
