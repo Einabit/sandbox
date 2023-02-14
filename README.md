@@ -31,7 +31,7 @@ temp1:
     skip: 0
 ```
 
-2. Simple photocell mock, the variable will change from 0 to 1 and vice versa every 2000 ms
+2. Simple photocell mock, the variable will change from 0 to 1 and vice versa every 2000 ms with a 20% skipping rate
 ```yml
 vis1:
   value:
@@ -40,7 +40,19 @@ vis1:
     step: 1
   interval:
     ms: 2000
-    skip: .4
+    skip: .2
+```
+
+3. carriage sensor that will randomly increase or decrease by 2 from 20 to 40 every 1200 ms with a 50% skipping rate
+```yml
+crg1:
+  value:
+    min: 20
+    max: 40
+    step: 2
+  interval:
+    ms: 1200
+    skip: .5
 ```
 
 ## Documentation
@@ -55,3 +67,11 @@ yml file must contain at least one variable
 |[_name.value.step]|int|2|Increment up or down
 |[_name.interval.ms]|int|400|Milliseconds elapsed for every operation
 |[_name.interval.skip]|float|0.4|operation skipping based on ratio (0.4 -> 40% skip)
+
+## Show me more!
+
+Since our services have to provide real time information we rely on sockets to do this. However it is pretty straight forward process with SDKs above referenced.
+
+SDKs above referenced do that but they provide a layer of abstraction so you don't have to mess with primitives of asynchronous communication. In case you want to learn how the process works or just because you're thinking on developing another SDK for a different language here are the `telnet` instructions that describe the available API.
+
+[In Deep Guide](DEEP_GUIDE.md)
