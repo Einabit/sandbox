@@ -11,7 +11,7 @@ generator.start(contents);
 net.createServer(connection => {
   connection.on("data", b => {
     const [command, ...args] = b.toString().split(",");
-    console.log("new connection received with command " + command);
+    console.log("new connection received with command " + command + " args: " + args.join());
     switch (command) {
       case "tap":
         tap(connection, args);
