@@ -1,7 +1,7 @@
 const { FILENAME = "./raw" } = process.env;
 const EventEmitter = require("events");
 const reverseReadStream = require("fs-reverse");
-const { appendFile } = require("fs");
+const { appendFile, readFile } = require("fs");
 
 const self = {};
 
@@ -22,18 +22,26 @@ self.lastValue = function (name) {
 }
 
 self.filter = function (name, from, to, readLine, end) {
-  const rfs = reverseReadStream(FILENAME);
-  rfs.on("data", data => {
-    if (!data.startsWith(name)) return;
-    const ts = Number(data.split(",").pop());
-    if (from <= ts && ts <= to) readLine(data);
-  })
 
-  rfs.on("end", end);
+  readFile(FILENAME, "utf8", (err, data) => {
+    if (err) throw err;
+    const lines = data.split("\n");
+
+    for (let line of lines) {
+      if (!line.startsWith(name)) continue;
+      const ts = Number(line.split(",")[1]);
+      if (from <= ts && ts <= to) {
+        readLine(line + "\n");
+      }
+    }
+
+    end();
+
+  });
 }
 
 self.commit = function (name, data) {
-  const line = [name, data, Date.now()].join();
+  const line = [name, Date.now(), data].join();
   return new Promise((resolve, reject) => {
     appendFile(FILENAME, line + "\n", err => {
       if (err) reject(err)

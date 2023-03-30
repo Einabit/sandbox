@@ -2,13 +2,18 @@ const fswrapper = require("./fs-wrapper");
 
 const self = {};
 
+function removeName (line) {
+  const firstComaNdx = line.search(",");
+  return line.substring(firstComaNdx + 1);
+}
+
 self.fetch = function (connection, args) {
   const _variable = args[0];
   const _fromTs = parseInt(args[1]);
   const _toTs = parseInt(args[2]);
 
   fswrapper.filter(_variable, _fromTs, _toTs,
-    data => connection.write(data), () => connection.end());
+    data => connection.write(removeName(data)), () => connection.end());
 }
 
 self.tap = function (connection, args) {
@@ -17,11 +22,11 @@ self.tap = function (connection, args) {
 
   if (_fromTs) {
     fswrapper.filter(_variable, _fromTs, Date.now(),
-      data => connection.write(data), _ => _);
+      data => connection.write(removeName(data)), _ => _);
   }
 
   const tapCallback = newdata => {
-    if (newdata.startsWith(_variable)) connection.write(newdata);
+    if (newdata.startsWith(_variable)) connection.write(removeName(newdata));
   }
 
   fswrapper.evt.on("line", tapCallback);
@@ -31,11 +36,11 @@ self.tap = function (connection, args) {
 self.value = function (connection, args) {
   const _variable = args[0];
   if (fswrapper.lastCommit[_variable]) {
-    connection.write(fswrapper.lastCommit[_variable]);
+    connection.write(removeName(fswrapper.lastCommit[_variable]));
     connection.end();
   } else {
     fswrapper.lastValue(_variable).then(value => {
-      connection.write(value);
+      connection.write(removeName(value));
       connection.end();
     });
   }
