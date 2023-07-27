@@ -46,4 +46,11 @@ self.value = function (connection, args) {
   }
 }
 
+self.last = function (connection, args) {
+  const _variable = args[0];
+  const _amount = parseInt(args[1]);
+  fswrapper.limitValues(_variable, _amount, line =>
+    connection.write(removeName(line)), () => connection.end());
+}
+
 module.exports = self;

@@ -21,6 +21,27 @@ self.lastValue = function (name) {
   });
 }
 
+self.limitValues = function (name, limit, readLine, end) {
+  const result = [];
+  let destroyed = false;
+  function destroy () {
+    if (!destroyed) {
+      destroyed = true;
+      rfs.destroy();
+      result.forEach(readLine);
+      end();
+    }
+  }
+  const rfs = reverseReadStream(FILENAME);
+  rfs.on("data", data => {
+    if (result.length < limit && data.startsWith(name)) {
+      result.unshift(data + "\n");
+      if (result.length >= limit) destroy();
+    }
+  })
+  rfs.on("end", destroy);
+}
+
 self.filter = function (name, from, to, readLine, end) {
 
   readFile(FILENAME, "utf8", (err, data) => {

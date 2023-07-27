@@ -5,7 +5,7 @@ const yp = require("yaml-parser");
 const contents = yp.safeLoad(CONFIG);
 const net = require("net");
 
-const { tap, fetch, value } = require("./commands");
+const { tap, fetch, value, last } = require("./commands");
 
 generator.start(contents);
 net.createServer(connection => {
@@ -21,6 +21,9 @@ net.createServer(connection => {
         break;
       case "value":
         value(connection, args);
+        break;
+      case "last":
+        last(connection, args);
         break;
     }
   });
