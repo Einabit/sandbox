@@ -108,3 +108,23 @@ crg1,20,1676393252597
 ... (the server will keep on sending information until the client closes the connection)
 
 ```
+
+**last**.
+
+Description: gets last N values from the stream. Values are sorted, recent values will go to bottom. You might reverse the result if you need a LIFO queue.
+
+Arguments: sensorname,amount
+
+Example with telnet:
+```
+$ telnet localhost 1337
+Trying ::1...                             # client is reaching the server.
+Connected to localhost.                   # client and server are connected.
+Escape character is '^]'.                 # this is usually CTRL+5.
+last,crg1,2^]                             # type command,sensorname,2^]
+telnet>                                   # here we just press ENTER (CR) to commit the message.
+crg1,20,1676393264611
+crg1,22,1676393263409
+Connection closed by foreign host.        # Finally the server closes the connection
+
+```
