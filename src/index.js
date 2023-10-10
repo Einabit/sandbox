@@ -6,6 +6,8 @@ const contents = yp.safeLoad(CONFIG);
 const net = require("net");
 const crypto = require("crypto");
 
+const EOL = "\n";
+
 function decrypt(combinedData, key) {
   const iv = Buffer.from(combinedData.slice(0, 32), "hex");
   const ciphertext = combinedData.slice(32);
@@ -17,21 +19,10 @@ function decrypt(combinedData, key) {
 
 const { tap, fetch, value, last } = require("./commands");
 
-generator.start(contents);
-net.createServer(connection => {
-  connection.on("data", b => {
-    let auxdata = b.toString();
-    let command = "", args = [];
-    try {
-      if (PASSPHRASE) auxdata = decrypt(auxdata, PASSPHRASE);
-      const aux = auxdata.split(",");
-      command = aux.shift();
-      args = aux;
-    } catch (e) {
-      return connection.end();
-    }
-    console.log("new connection received with command " + command + " args: " + args.join());
-    switch (command) {
+function commitCommand (connection, command) {
+    const args = command.split(",");
+    const prefix = args.shift();
+    switch (prefix) {
       case "tap":
         tap(connection, args);
         break;
@@ -46,6 +37,31 @@ net.createServer(connection => {
         break;
       default:
         connection.end();
+    }
+}
+
+
+generator.start(contents);
+net.createServer(connection => {
+  let auxCommandPackets = [];
+  console.log("New connection started");
+  connection.on("end", () => console.log("Connection ended by peer"));
+  connection.on("data", b => {
+    let auxdata = b.toString();
+    try {
+      if (PASSPHRASE) auxdata = decrypt(auxdata, PASSPHRASE);
+    } catch (e) {
+      return connection.end();
+    }
+
+    auxCommandPackets.push(auxdata);
+    if (auxdata.endsWith(EOL)) {
+      const command = auxCommandPackets.join("").trim();
+      console.log("Received command " + command);
+      commitCommand(
+        connection,
+        command
+      );
     }
   });
 }).listen(1337);
