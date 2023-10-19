@@ -28,7 +28,7 @@ Inside the container a file called **raw** represents the data persistence, we m
 
 We may add more sensor definitions to the **config.yml** and restart the container to add up features.
 
-In order to extract information from the API there are three options or available commands: *value, fetch* and *tap*. These commands may have arguments and behavior, the documentation is as follows.
+In order to extract information from the API there are three options or available commands: *value, fetch*, *tap* and *last*. These commands may have arguments and behavior, the documentation is as follows.
 
 The communication with the service has to be done using sockets. So the API service is listening for connections on **port 1337**. A client has to open up a socket connection and then send a command instruction.
 

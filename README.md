@@ -11,11 +11,26 @@ This project allows you to mock a service with similar behavior as Einabit API s
 ```
 docker run --rm -d -e CONFIG="$(cat config.yml)" -p 1337:1337 --name einabit einabit/sandbox
 ```
+
 Connect to it using any client:
 
 - [Nodejs SDK](https://github.com/Einabit/client.js)
 - [Java SDK](https://github.com/Einabit/client.java)
 - [Python SDK](https://github.com/Einabit/client.py)
+
+## (Optional) Encryption
+
+When using production environment, meaning real Einabit API, you will be provided with an encryption key since the API service will only answer to encrypted messages or queries.
+
+If you want to try out this behavior you can provide a key as an environment variable `PASSPHRASE` to the sandbox.
+
+This is optional when using the sandbox. The sandbox service will not try to decrypt messages if `PASSPHRASE` is not provided. Bare it in mind.
+
+```
+docker run --rm -d -e PASSPHRASE="<32 bit hex string>" -e CONFIG="$(cat config.yml)" -p 1337:1337 --name einabit einabit/sandbox
+```
+
+If you have node installed in your machine you can generate a random key using this command: `node -p 'require("crypto").randomBytes(16).toString("hex")'`
 
 ## Quick start & samples
 
