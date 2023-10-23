@@ -22,7 +22,7 @@ self.tap = function (connection, args) {
 
   if (_fromTs) {
     fswrapper.filter(_variable, _fromTs, Date.now(),
-      data => connection.write(removeName(data)), () => connection.end());
+      data => connection.write(removeName(data)), _ => _);
   }
 
   const tapCallback = newdata => {
@@ -46,11 +46,11 @@ self.value = function (connection, args) {
   }
 }
 
-self.last = function (args, write, end) {
+self.last = function (connection, args) {
   const _variable = args[0];
   const _amount = parseInt(args[1]);
   fswrapper.limitValues(_variable, _amount, line =>
-    () => connection.write(removeName(line)), () => connection.end());
+    connection.write(removeName(line)), () => connection.end());
 }
 
 module.exports = self;
