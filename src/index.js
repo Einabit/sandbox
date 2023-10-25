@@ -47,20 +47,21 @@ net.createServer(connection => {
   console.log("New connection started");
   connection.on("end", () => console.log("Connection ended by peer"));
   connection.on("data", b => {
-    let auxdata = b.toString();
-    try {
-      if (PASSPHRASE) auxdata = decrypt(auxdata, PASSPHRASE);
-    } catch (e) {
-      return connection.end();
-    }
-
+    const auxdata = b.toString();
     auxCommandPackets.push(auxdata);
     if (auxdata.endsWith(EOL)) {
-      const command = auxCommandPackets.join("").trim();
-      console.log("Received command " + command);
+      let auxstr = auxCommandPackets.join("").trim();
+      try {
+        if (PASSPHRASE) auxstr = decrypt(auxstr, PASSPHRASE);
+      } catch (e) {
+        console.log(e);
+        return connection.end();
+      }
+
+      console.log("Received command " + auxstr);
       commitCommand(
         connection,
-        command
+        auxstr
       );
     }
   });
